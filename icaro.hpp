@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <format>
 
-#define TEST( name, test ) Icaro::tests.emplace_back( #name, []()-> bool { test }  );
+#define TEST( name, test ) Icaro::tests.emplace_back( #name, [](void* ctx)-> bool { test }  );
 
 // NOTE:
 //  For specific types like optionals or result/expected unions, you'll need to define your own
@@ -92,7 +92,7 @@ namespace Icaro
     struct Test
     {
         Test() = delete;
-        Test( const char* _name, bool (*lambda)() ): name( _name ), test_fun( lambda ) {}
+        Test( const char* _name, bool (*lambda)(void* ctx) ): name( _name ), test_fun( lambda ), context( nullptr ) {}
 
         // TODO: Print how long it took
         [[ nodiscard ]]
@@ -105,7 +105,7 @@ namespace Icaro
                 println( "---" );
                 return false;
             }
-            const auto passed = test_fun();
+            const auto passed = test_fun( context );
             if( passed )
             {
                 println( "✅ PASSED" );
@@ -114,7 +114,8 @@ namespace Icaro
         }
 
         String name;
-        bool (*test_fun)();
+        bool (*test_fun)(void* ctx);
+        void* context; // For `setup` to populate
     };
 
 
@@ -124,8 +125,8 @@ namespace Icaro
     struct RunArgs
     {
         String filter       = "";
-        void (*setup)()     = nullptr;
-        void (*teardown)()  = nullptr;
+        void (*setup)( void** context )     = nullptr;
+        void (*teardown)( void** context )  = nullptr;
     };
     static void run( const RunArgs& args )
     {
@@ -133,19 +134,21 @@ namespace Icaro
         auto failed = List<String>{};
         failed.reserve( tests.size() );
 
-        for( const auto& test: tests )
+        for( auto& test: tests )
         {
             if( strempty( args.filter )
                 or strcasestr( test.name, args.filter ) )
             {
-                if( args.setup ) args.setup();
+                if( args.setup )
+                    args.setup( &test.context );
 
                 if( test.run() )
                     ++passed;
                 else
                     failed.emplace_back( test.name );
 
-                if( args.teardown ) args.teardown();
+                if( args.teardown )
+                    args.teardown( &test.context );
 
                 println( "---" );
             }

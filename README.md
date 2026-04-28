@@ -24,6 +24,8 @@ The `run` function takes 3 optional arguments:
 
  - `takedown`: Function pointer to an optional teardown function to be run after *each* test
 
+Each test has a `void*` context that can be allocated by `setup` (and should be deallocated by `teardown`), so you can use custom data during the test run.
+
 ### Example
 ```cpp
 #include "icaro.hpp"

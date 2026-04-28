@@ -1,10 +1,8 @@
 #include "icaro.hpp"
 #include <cstdio>
 
-static void setup()    { printf( "🏗️ SETUP\n"    ); }
-static void teardown() { printf( "⚒️ TEARDOWN\n" ); }
 
-auto main() -> int
+auto main( int argc, char* argv[] ) -> int
 {
     TEST( verify_true,
     {
@@ -37,6 +35,40 @@ auto main() -> int
     printf( "\n---\n\n" );
 
     printf( "# TESTING SETUP AND TEARDOWN\n" );
-    Icaro::run({ .setup = setup, .teardown = teardown });
+    {
+        auto setup =    []( void** context ) -> void { printf( "🏗️ SETUP\n"    ); };
+        auto teardown = []( void** context ) -> void { printf( "⚒️ TEARDOWN\n" ); };
+        Icaro::run({ .setup = setup, .teardown = teardown });
+    }
+    printf( "\n---\n\n" );
+
+    printf( "# TESTING SHADER CONTEXT\n" );
+    {
+        static constexpr int item_count = 4;
+
+        auto allocate_ctx = []( void** context ) -> void
+        {
+            *context = new int[ item_count ];
+            for( int i=0; i<item_count; ++i )
+                ((int*)(*context))[i] = i;
+        };
+
+        auto deallocate_ctx = []( void** context ) -> void
+        {
+            delete[] (int*)(*context);
+            *context = nullptr;
+        };
+
+        TEST( shader_context,
+        {
+            VERIFY_PTR( ctx );
+            for( int i=0; i<item_count; ++i )
+            {
+                VERIFY_EQ( ((int*)ctx)[i], i );
+            }
+            return true;
+        });
+        Icaro::run({ .filter = "shader_context", .setup = allocate_ctx, .teardown = deallocate_ctx });
+    }
     printf( "\n---\n\n" );
 }
