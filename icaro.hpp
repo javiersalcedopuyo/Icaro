@@ -19,6 +19,9 @@
 
 namespace Icaro
 {
+    struct Version{ int major, minor, patch; };
+    inline constexpr Version version{ .major = 0, .minor = 1, .patch = 0 };
+
     using String = const char*;
 
     [[ nodiscard ]]
