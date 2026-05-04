@@ -13,6 +13,7 @@ To perform the tests 3 macros are provided:
 - `VERIFY` for boolean expressions
 - `VERIFY_EQ` to compare equality
 - `VERIFY_NOT_EQ` to compare non equality
+- `VERIFY_PTR` to verify pointers are not NULL
 
 Each of them uses a templated implementation `ImplVerify[Eq|NotEq]`. If you have custom types that require specific behaviour (like different error logging, or more complex validation) you'll have to provide your own specialisation of said templates.
 

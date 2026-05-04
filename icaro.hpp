@@ -15,6 +15,7 @@
 #define VERIFY( condition )     if( !Icaro::ImplVerify( (condition), #condition ) ) return false;
 #define VERIFY_EQ( a, b )       if( !Icaro::ImplVerifyEq( (a), (b), #a, #b ) )      return false;
 #define VERIFY_NOT_EQ( a, b )   if( !Icaro::ImplVerifyNotEq( (a), (b), #a, #b ) )   return false;
+#define VERIFY_PTR( ptr )       if( !ptr ){ Icaro::println( "❌ FAILED: Expected '{}' to be not NULL", #ptr ); return false; }
 
 
 namespace Icaro
