@@ -1,5 +1,7 @@
 # Icaro: Dedalo's Tester
 
+[![Casual Maintenance Intended](https://casuallymaintained.tech/badge.svg)](https://casuallymaintained.tech/)
+
 ![Icaro's logo](logo.png)
 
 Minimal testing framework for C++ >= 20, designed as a companion for the build system [Dedalo](https://github.com/javiersalcedopuyo/dedalo).
