@@ -2,7 +2,7 @@
 #include <cstdio>
 
 
-auto main( int argc, char* argv[] ) -> int
+auto main() -> int
 {
     TEST( verify_true,
     {
@@ -36,8 +36,8 @@ auto main( int argc, char* argv[] ) -> int
 
     printf( "# TESTING SETUP AND TEARDOWN\n" );
     {
-        auto setup =    []( void** context ) -> void { printf( "🏗️ SETUP\n"    ); };
-        auto teardown = []( void** context ) -> void { printf( "⚒️ TEARDOWN\n" ); };
+        auto setup =    []( [[maybe_unused]] void** context ) -> void { printf( "🏗️ SETUP\n"    ); };
+        auto teardown = []( [[maybe_unused]] void** context ) -> void { printf( "⚒️ TEARDOWN\n" ); };
         Icaro::run({ .setup = setup, .teardown = teardown });
     }
     printf( "\n---\n\n" );

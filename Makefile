@@ -5,7 +5,7 @@ DEBUGGER = lldb
 
 CFLAGS = -std=c++20\
 		 -g\
-		 -Werror -Wall -pedantic\
+		 -Werror -Wall -Wextra -pedantic\
 		 -DDEBUG\
 		 -fno-exceptions\
 		 -fno-rtti\

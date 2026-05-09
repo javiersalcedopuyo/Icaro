@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <format>
 
-#define TEST( name, test ) Icaro::tests.emplace_back( #name, [](void* ctx)-> bool { test }  );
+#define TEST( name, test ) Icaro::tests.emplace_back( #name, []( [[maybe_unused]] void* ctx )-> bool { test }  );
 
 // NOTE:
 //  For specific types like optionals or result/expected unions, you'll need to define your own
@@ -15,7 +15,7 @@
 #define VERIFY( condition )     if( !Icaro::ImplVerify( (condition), #condition ) ) return false;
 #define VERIFY_EQ( a, b )       if( !Icaro::ImplVerifyEq( (a), (b), #a, #b ) )      return false;
 #define VERIFY_NOT_EQ( a, b )   if( !Icaro::ImplVerifyNotEq( (a), (b), #a, #b ) )   return false;
-#define VERIFY_PTR( ptr )       if( !ptr ){ Icaro::println( "❌ FAILED: Expected '{}' to be not NULL", #ptr ); return false; }
+#define VERIFY_PTR( ptr )       if( !(ptr) ){ Icaro::println( "❌ FAILED: Expected '{}' to be not NULL", #ptr ); return false; }
 
 
 namespace Icaro
