@@ -5,6 +5,7 @@
 #endif
 
 #include <cstdio>
+#include <cstring>
 #include <format>
 
 #define TEST( name, test ) Icaro::tests.emplace_back( #name, []( [[maybe_unused]] void* ctx )-> bool { test }  );
