@@ -19,12 +19,33 @@
 #define VERIFY_PTR( ptr )       if( !(ptr) ){ Icaro::println( "❌ FAILED: Expected '{}' to be not NULL", #ptr ); return false; }
 
 
+
+// Preprocessor magic so __COUNTER__ can be expanded correctly
+#define ICARO_CONCATENATE( l, r )         ICARO_DO_CONCATENATE( l, r )
+#define ICARO_DO_CONCATENATE( l, r )      ICARO_DO_CONCATENATE_2( l, r )
+#define ICARO_DO_CONCATENATE_2( l, r )    l##r
+
+#define icaro_defer( f ) const auto ICARO_CONCATENATE( _deferred, __COUNTER__ ) = Icaro::Deferrable( [&]() -> void { f; } );
+
+
 namespace Icaro
 {
     struct Version{ int major, minor, patch; };
-    inline constexpr Version version{ .major = 0, .minor = 1, .patch = 1 };
+    inline constexpr Version version{ .major = 0, .minor = 2, .patch = 0 };
 
     using String = const char*;
+
+    template<typename Lambda>
+    class Deferrable
+    {
+    public:
+        Deferrable() = delete;
+        Deferrable( Lambda  f ): action( f ) {}
+        ~Deferrable() { action(); }
+    private:
+        const Lambda action;
+    };
+
 
     [[ nodiscard ]]
     static constexpr auto strempty( const char* str ) -> bool
